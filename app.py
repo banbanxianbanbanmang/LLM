@@ -134,7 +134,7 @@ def api_get_result():
     # 检查是否有处理后的数据
     if progress==100:
         progress=None
-        print(processed_data)
+        print("数据列表已经返回")
         return jsonify({'result': processed_data})  # 返回处理后的数据
         
     else:

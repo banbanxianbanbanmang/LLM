@@ -157,7 +157,7 @@ function fetchDataAndDisplay() {
                 }
                 if (Array.isArray(data.result)) {
                     resultArray = data.result
-                    updateTableWithData(data.result);  // 更新表格数据
+                    // updateTableWithData(data.result);  // 更新表格数据
                     displayTable(1); // 显示第一页数据
                 }
 
@@ -207,7 +207,7 @@ function checkProgress() {
             progressStatusElement.textContent = `任务进度：${data.progress}%`;
 
             // 如果进度已经完成，获取结果并处理
-            if (data.progress >= 100) {
+            if (data.progress == 100) {
                 clearInterval(globalprogressInterval);  // 停止查询进度
                 // progressStatusElement.style.display = 'none';  // 隐藏提示    
                 progressStatusElement.textContent = '处理完成';  // 可自定义完成后的信息
@@ -218,7 +218,7 @@ function checkProgress() {
                 // 网络获取结果
                 fetchDataAndDisplay()
                 // 结果展示
-                updateTableWithData(data.result);  // 假设您有这样一个函数来展示数据
+                // updateTableWithData(data.result);  // 假设您有这样一个函数来展示数据
                 displayTable(1); // 显示第一页数据
 
             }
@@ -265,7 +265,7 @@ function jsonToCSV(jsonData, filename) {
 function save2csv() {
     // 假设selectedFiles变量中存储了后台传回的JSON数据
     try {
-        jsonToCSV(selectedFiles, 'data.csv');
+        jsonToCSV(resultArray, 'data.csv');
     } catch (error) {
         console.error('Error while converting JSON to CSV:', error);
         alert('转换成CSV文件时出错');
