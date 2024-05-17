@@ -5,9 +5,15 @@ from werkzeug.utils import secure_filename
 from threading import Thread
 import random
 import time
+import json
+
+config = {}
+with open('config.json', 'r', encoding='utf-8') as f:
+    config = json.load(f)
 
 progress = 0  # 初始化进度为0
 processed_data = []
+selected_model = None
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'Uploads/'  # 设置上传文件的存储文件夹
@@ -132,7 +138,31 @@ def api_get_result():
         return jsonify({'result': processed_data})  # 返回处理后的数据
         
     else:
-        return jsonify({'error': '没有可用的处理后的数据'}), 404    
+        return jsonify({'error': '没有可用的处理后的数据'}), 404   
+# 回应网页端可以访问模型列表
+@app.route('/api/GetModelsList', methods=['GET'])
+def get_models():
+    try:
+        return jsonify({'models': config['models']
+}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+# 假设你已经保存了当前选中的模型
+@app.route('/api/SetSelectedModel', methods=['POST'])
+def set_selected_model():
+    global selected_model
+    model = request.get_json().get('model', None)
+    if model is None:
+        return jsonify({'error': '没有提供模型名称'}), 400
+
+    # 在设置新模型前，检查是否在可用模型列表中
+    if model not in config['models']:
+        return jsonify({'error': '选择的模型不在可用模型列表中'}), 400
+
+    selected_model = model
+    return jsonify({'message': '模型选择成功'}), 200
 if __name__ == '__main__':
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)  # 创建上传文件夹
     app.run(debug=True)
